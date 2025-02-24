@@ -1,0 +1,328 @@
+body{
+    background:#2d2d35;
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background: #2d2d35; /* Основной фон */
+}
+
+.product-container {
+    width: 85%;
+    max-width: 1200px;
+    display: flex;
+    margin-top: 90px !important;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.product {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+    background: #3a3a48; /* Темный фон карточки */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    color: #ffffff; /* Белый текст */
+}
+
+.product-image {
+    flex: 1;
+    max-width: 380px;
+}
+
+.product-image img {
+    width: 100%;
+    border-radius: 12px;
+}
+
+.product-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-title {
+    font-size: 32px; /* Сделал заголовок чуть крупнее */
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #f8f8f8; /* Яркий текст */
+}
+
+.product-info p {
+    margin: 8px 0;
+    font-size: 18px;
+    color: #d1d1d1; /* Светло-серый текст */
+    line-height: 1.6; /* Улучшил читаемость */
+}
+
+.components-list {
+    list-style: none;
+    padding: 0;
+}
+
+.component-item {
+    background: #4a4a5e; /* Темно-серый фон */
+    padding: 12px;
+    border-radius: 6px;
+    margin: 6px 0;
+    font-size: 18px; /* Увеличил текст списка */
+    color: #ffffff;
+}
+
+.section-title {
+    margin-top: 25px;
+    font-size: 24px; /* Увеличил заголовки секций */
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+.reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: #3a3a48;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.review-card {
+    background: #505066;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.review-form input,
+.review-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #5c5c6d;
+    border-radius: 6px;
+    font-size: 16px;
+    background: #2d2d35;
+    color: #ffffff;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 6px;
+    width: 180px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.button-group {
+    display: flex;
+    gap: 300px; /* Отступ между кнопками */
+    align-items: center;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-outline-primary {
+    background: none;
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+
+
+/* Стили для меток */
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: white;
+}
+
+/* Стили для полей ввода */
+
+/* Эффект при фокусе */
+input[type="number"]:focus, textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Дополнительные стили для текстового поля */
+textarea {
+    resize: none;
+    height: 80px;
+}
+
+
+.discounted-price {
+    font-weight: bold;
+    color: #28a745;
+    margin-right: 10px;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #888;
+}
+
+/* 📱 Адаптивность для планшетов и небольших экранов */
+@media (max-width: 1024px) {
+    .product {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .product-image {
+        max-width: 100%;
+    }
+
+    .product-info {
+        width: 100%;
+        align-items: center;
+    }
+
+    .product-title {
+        font-size: 28px;
+    }
+
+    .product-info p {
+        font-size: 16px;
+    }
+
+    .components-list {
+        text-align: left;
+    }
+
+    .button-group {
+        gap: 20px; /* Уменьшаем отступ между кнопками */
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .reviews {
+        padding: 15px;
+    }
+}
+
+/* 📱 Смартфоны (до 768px) */
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 20px;
+    }
+
+    .product-container {
+        width: 95%;
+        gap: 20px;
+    }
+
+    .product-title {
+        font-size: 24px;
+    }
+
+    .product-info p {
+        font-size: 14px;
+    }
+
+    .component-item {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .review-card {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .btn {
+        width: 100%; /* Кнопки на всю ширину */
+        font-size: 14px;
+    }
+
+    .btn-success, .btn-secondary, .btn-outline-primary, .btn-primary {
+        padding: 10px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* 📱 Очень маленькие экраны (до 480px) */
+@media (max-width: 480px) {
+    .product-title {
+        font-size: 20px;
+    }
+
+    .product-info p {
+        font-size: 13px;
+    }
+
+    .component-item {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .reviews {
+        gap: 15px;
+    }
+
+    .review-card {
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .review-form input, .review-form textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .btn {
+        font-size: 13px;
+        padding: 8px;
+    }
+}

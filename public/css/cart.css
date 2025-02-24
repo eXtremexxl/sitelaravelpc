@@ -1,0 +1,135 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #2d2d35; /* Тёмный фон */
+    color: #f1f1f1; /* Светлый текст */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Минимальная высота страницы */
+}
+
+.cart-container {
+    margin-top: 90px !important;
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #3a3a48; /* Чуть светлее фона */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    flex: 1;
+}
+
+.cart-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #ffffff; /* Белый текст */
+}
+
+.empty-cart {
+    text-align: center;
+    color: #aaa;
+    font-size: 20px;
+}
+
+.cart-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    background: #4a4a5e; /* Глубокий серо-синий */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    gap: 20px;
+}
+
+.cart-item-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f8f8f8;
+    margin-bottom: 5px;
+}
+
+.cart-item-price {
+    font-size: 18px;
+    color: #d1d1d1;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.discount-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Кнопки */
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+    font-size: 20px;
+    padding: 15px 25px;
+}
+
+.btn-remove {
+    background: #dc3545;
+    color: white;
+    font-size: 18px;
+}
+
+.btn-remove:hover, .btn-success:hover {
+    opacity: 0.85;
+}
+
+/* Блок оформления заказа */
+.checkout {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Футер */
+.footer {
+    background: #1f1f28;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+    font-size: 18px;
+}
+
