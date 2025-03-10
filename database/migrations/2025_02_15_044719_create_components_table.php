@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('components', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // Название комплектующего
-            $table->enum('category', ['Процессор', 'Видеокарта', 'Материнская плата', 'ОЗУ', 'SSD', 'HDD', 'Блок питания']);
+            $table->enum('category', ['Процессор', 'Видеокарта', 'Материнская плата', 'ОЗУ', 'SSD', 'HDD', 'Блок питания', 'Корпус', 'Кулер']);
             $table->timestamps();
         });
 
@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('component_id')->constrained()->onDelete('cascade');
+            
         });
     }
 

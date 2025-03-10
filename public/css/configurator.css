@@ -1,0 +1,377 @@
+/* Основные стили */
+body {
+    background: #2d2d35;
+    color: #e0e6ed;
+    font-family: 'Inter', 'Arial', sans-serif; /* Замена на Inter */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+.configurator-container {
+    max-width: 1200px;
+    margin: 100px auto;
+    padding: 30px;
+    background: linear-gradient(145deg, rgba(58, 58, 72, 0.95), rgba(45, 45, 53, 0.95));
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    color: #f1f5f9;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.8rem;
+    font-weight: 600; /* Уменьшен вес для четкости */
+    letter-spacing: 0.5px;
+}
+
+/* Форма и фильтры */
+.filters {
+    margin-bottom: 30px;
+}
+
+.filters select {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(81, 112, 255, 0.2);
+    background: rgba(68, 68, 84, 0.8);
+    color: #e0e6ed;
+    font-size: 1.1rem;
+    font-weight: 400; /* Легкий вес для четкости */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filters select:hover {
+    background: rgba(85, 85, 102, 0.8);
+    border-color: #5170ff;
+    box-shadow: 0 0 10px rgba(81, 112, 255, 0.2);
+}
+
+/* Группы компонентов */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500; /* Средний вес для читаемости */
+    color: #c3d0e0;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(81, 112, 255, 0.2);
+    background: rgba(68, 68, 84, 0.8);
+    color: #e0e6ed;
+    font-size: 1.1rem;
+    font-weight: 400; /* Легкий вес для четкости */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-group select:hover {
+    background: rgba(85, 85, 102, 0.8);
+    border-color: #5170ff;
+    box-shadow: 0 0 10px rgba(81, 112, 255, 0.15);
+}
+
+/* Общая информация */
+.total-info {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(90deg, rgba(68, 68, 84, 0.7), rgba(58, 58, 72, 0.7));
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.3rem;
+    color: #e0e6ed;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.total-info span {
+    font-weight: 600; /* Средний вес для четкости */
+    color: #34d399;
+    text-shadow: 0 1px 4px rgba(52, 211, 153, 0.3);
+}
+
+/* Сообщения о совместимости */
+#compatibility {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(90deg, rgba(68, 68, 84, 0.7), rgba(58, 58, 72, 0.7));
+    border-radius: 12px;
+    color: #e0e6ed;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#compatibility .text-success {
+    color: #34d399;
+    font-weight: 500;
+}
+
+#compatibility .text-danger {
+    color: #ff6b6b;
+    font-weight: 500;
+}
+
+#compatibility ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#compatibility li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 20px;
+}
+
+#compatibility li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #ff6b6b;
+}
+
+/* Кнопки */
+.button-group {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.button-group .btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 500; /* Средний вес для четкости */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.button-group .btn-primary {
+    background: linear-gradient(0deg, rgba(181, 14, 48, 1) 0%, rgba(234, 19, 67, 1) 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.button-group .btn-primary:hover {
+    background: linear-gradient(0deg, rgba(150, 10, 40, 1) 0%, rgba(200, 15, 55, 1) 100%);
+    transform: translateY(-2px);
+}
+
+.button-group .btn-secondary {
+    background: linear-gradient(45deg, #6c757d, #5a6268);
+    color: #ffffff;
+}
+
+.button-group .btn-secondary:hover {
+    background: linear-gradient(45deg, #5a6268, #4b5257);
+    transform: translateY(-2px);
+}
+
+.button-group .btn-outline-primary {
+    background: transparent;
+    border: 2px solid #5170ff;
+    color: #5170ff;
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+.button-group .btn-outline-primary:hover {
+    background: rgba(81, 112, 255, 0.1);
+    color: #ffffff;
+    transform: translateY(-2px);
+    text-align: center; /* Сохранение выравнивания при наведении */
+}
+
+/* График */
+#benchmarkChart {
+    margin-top: 25px;
+    background: linear-gradient(145deg, rgba(58, 58, 72, 0.9), rgba(45, 45, 53, 0.9));
+    border-radius: 16px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
+}
+
+
+
+/* Анимации */
+.fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивность */
+
+/* Планшеты и маленькие экраны (до 768px) */
+@media (max-width: 768px) {
+    .configurator-container {
+        margin: 70px 15px;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .filters select,
+    .form-group select {
+        font-size: 1rem;
+        padding: 10px 12px;
+    }
+
+    .total-info {
+        font-size: 1.1rem;
+        padding: 15px;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .button-group .btn {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    #benchmarkChart {
+        padding: 10px;
+    }
+}
+
+/* Мобильные устройства (до 480px) */
+@media (max-width: 480px) {
+    .configurator-container {
+        margin: 70px 10px;
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .filters {
+        margin-bottom: 20px;
+    }
+
+    .filters select,
+    .form-group select {
+        font-size: 1rem; /* Увеличен для четкости */
+        padding: 8px 10px;
+        line-height: 1.5;
+        font-weight: 400; /* Легкий вес для резкости */
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 0.95rem; /* Увеличен для читаемости */
+        font-weight: 500;
+    }
+
+    .total-info {
+        font-size: 1.05rem; /* Увеличен для четкости */
+        padding: 12px;
+    }
+
+    #compatibility {
+        padding: 15px;
+        font-size: 1rem; /* Увеличен для четкости */
+    }
+
+    #compatibility li {
+        padding-left: 15px;
+        margin-bottom: 6px;
+    }
+
+    .button-group {
+        gap: 8px;
+    }
+
+    .button-group .btn {
+        padding: 10px;
+        font-size: 1rem; /* Увеличен для четкости */
+        min-width: 100px;
+    }
+
+    #benchmarkChart {
+        padding: 8px;
+        margin-top: 20px;
+    }
+}
+
+/* Очень маленькие экраны (до 360px) */
+@media (max-width: 360px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .filters select,
+    .form-group select {
+        font-size: 0.95rem; /* Чуть меньше, но четко */
+        padding: 6px 8px;
+        line-height: 1.5;
+    }
+
+    .total-info {
+        font-size: 1rem;
+    }
+
+    .button-group .btn {
+        font-size: 0.95rem;
+        padding: 8px;
+    }
+}
+
+/* Улучшение четкости текста для мобильных устройств */
+@media (max-width: 768px) {
+    body,
+    .configurator-container,
+    .filters select,
+    .form-group label,
+    .form-group select,
+    .total-info,
+    #compatibility,
+    .button-group .btn {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+}

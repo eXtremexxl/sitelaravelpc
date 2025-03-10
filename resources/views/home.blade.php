@@ -3,6 +3,7 @@
 @section('title', 'Главная')
 
 @section('content')
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.5/css/swiper.min.css'>
 
     <!-- Главны -->
@@ -90,7 +91,63 @@
                                 <h1 class="product-slider__title">
                                     {{ $product->name }}
                                 </h1>
-                                <span class="product-slider__price">₽{{ number_format($product->price, 0, ',', ',') }}</span>
+                                <span class="product-slider__price">₽{{ number_format($product->price, 0, ',', '.') }}</span>
+
+                                <div class="product-ctr">
+                                    <!-- Рандомный выбор компонента и производительности -->
+                                    @php
+                                        $components = [
+                                            'cpu' => ['Процессор', ['Intel Core i9', 'AMD Ryzen 9']],
+                                            'gpu' => ['Видеокарта', ['NVIDIA RTX 5090', 'NVIDIA RTX 5080']],
+                                            'ram' => ['Оперативная память', ['16 GB DDR4', '32 GB DDR4']],
+                                            'storage' => ['Накопитель', ['1 TB SSD', '2 TB SSD']]
+                                        ];
+                                        $randomComponentKey = array_rand($components);
+                                        $randomComponent = $components[$randomComponentKey];
+                                        $randomPerformance = rand(80, 100);
+                                        $dashArray = $randomPerformance * 3;
+                                    @endphp
+
+                                    <div class="product-labels">
+                                        <div class="product-labels__title">{{ $randomComponent[0] }}</div>
+                                        <div class="product-labels__group">
+                                            <label class="product-labels__item">
+                                                <input type="radio" class="product-labels__checkbox" name="{{ $randomComponentKey }}_{{ $product->id }}" checked>
+                                                <span class="product-labels__txt">{{ $randomComponent[1][0] }}</span>
+                                            </label>
+                                            <label class="product-labels__item">
+                                                <input type="radio" class="product-labels__checkbox" name="{{ $randomComponentKey }}_{{ $product->id }}">
+                                                <span class="product-labels__txt">{{ $randomComponent[1][1] }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <span class="hr-vertical"></span>
+
+                                    <!-- Рандомный индикатор производительности -->
+                                    <div class="product-inf">
+                                        <div class="product-inf__percent">
+                                            <div class="product-inf__percent-circle">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                                                    <defs>
+                                                        <linearGradient id="gradient{{ $loop->index }}" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                            <stop offset="0%" stop-color="#0c1e2c" stop-opacity="0" />
+                                                            <stop offset="100%" stop-color="#cb2240" stop-opacity="1" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <circle cx="50" cy="50" r="47" 
+                                                            stroke-dasharray="{{ $dashArray }}, 300" 
+                                                            stroke="#cb2240" 
+                                                            stroke-width="4" 
+                                                            fill="none"/>
+                                                </svg>
+                                            </div>
+                                            <div class="product-inf__percent-txt">
+                                                {{ $randomPerformance }}%
+                                            </div>
+                                        </div>
+                                        <span class="product-inf__title">ПРОИЗВОДИТЕЛЬНОСТЬ</span>
+                                    </div>
+                                </div>
 
                                 <div class="product-slider__bottom">
                                     <form action="{{ route('cart.add', $product->id) }}" method="POST">
@@ -109,17 +166,14 @@
     </div>
 </div>
 
-
-    
-    </div>
-    <svg class="hidden" hidden>
-      <symbol id="icon-arrow-left" viewBox="0 0 32 32">
+<svg class="hidden" hidden>
+    <symbol id="icon-arrow-left" viewBox="0 0 32 32">
         <path d="M0.704 17.696l9.856 9.856c0.896 0.896 2.432 0.896 3.328 0s0.896-2.432 0-3.328l-5.792-5.856h21.568c1.312 0 2.368-1.056 2.368-2.368s-1.056-2.368-2.368-2.368h-21.568l5.824-5.824c0.896-0.896 0.896-2.432 0-3.328-0.48-0.48-1.088-0.704-1.696-0.704s-1.216 0.224-1.696 0.704l-9.824 9.824c-0.448 0.448-0.704 1.056-0.704 1.696s0.224 1.248 0.704 1.696z"></path>
-      </symbol>
-      <symbol id="icon-arrow-right" viewBox="0 0 32 32">
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 32 32">
         <path d="M31.296 14.336l-9.888-9.888c-0.896-0.896-2.432-0.896-3.328 0s-0.896 2.432 0 3.328l5.824 5.856h-21.536c-1.312 0-2.368 1.056-2.368 2.368s1.056 2.368 2.368 2.368h21.568l-5.856 5.824c-0.896 0.896-0.896 2.432 0 3.328 0.48 0.48 1.088 0.704 1.696 0.704s1.216-0.224 1.696-0.704l9.824-9.824c0.448-0.448 0.704-1.056 0.704-1.696s-0.224-1.248-0.704-1.664z"></path>
-      </symbol>
-    </svg>
+    </symbol>
+</svg>
 
 
 <!-- 📢 Акция -->
@@ -157,6 +211,8 @@
         </div>
     </div>
 
+
+
     <!-- 🛠️ Сборки под заказ -->
     <section class="steps">
         <h2>Получите мощный игровой ПК за 4 простых шага</h2>
@@ -193,10 +249,43 @@
     </section>
 
 
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.5/js/swiper.min.js'></script>
 
     <script>
+
+(() => {
+    const modelViewers = document.querySelectorAll('model-viewer');
+    const cards = document.querySelectorAll('.card');
+    const defaultOrbit = '64deg 25deg 64m';
+    const hoverOrbit = '90deg -42deg 80m';
+    const applyOrbit = (modelViewer, orbit) => {
+      modelViewer.setAttribute('camera-orbit', orbit);
+      modelViewer.setAttribute('interpolation-decay', '200');
+    };
+    cards.forEach((card, index) => {
+      const modelViewer = modelViewers[index];
+      if (modelViewer) {
+        card.addEventListener('mouseenter', () => applyOrbit(modelViewer, hoverOrbit));
+        card.addEventListener('mouseleave', () => applyOrbit(modelViewer, defaultOrbit));
+        modelViewer.addEventListener('load', () => {
+          modelViewer.classList.add('loaded');
+        });
+      } else {
+        console.log(`No model found for card at i:${index}`);
+      }
+    });
+  })();
+  
+  function changeModelStyle(element, deg, invert = 0) {
+    const card = element.closest('.card');
+    const modelViewer = card.querySelector('model-viewer');
+    if (modelViewer) { modelViewer.style.filter = `hue-rotate(${deg}deg) invert(${invert})`; }
+  }
+
+
+  
         (() => {
     const modelViewers = document.querySelectorAll('model-viewer');
     const cards = document.querySelectorAll('.card');

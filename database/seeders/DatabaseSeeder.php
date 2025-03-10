@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         // Вызов ComponentSeeder
         $this->call(ComponentSeeder::class);
-        $this->call(AdminSeeder::class);
+        $this->call(AdminUserSeeder::class);
 
 
     }

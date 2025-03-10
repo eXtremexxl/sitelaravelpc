@@ -17,7 +17,7 @@ body {
 }
 
 .navbar {
-  position: fixed; /* Прикрепляем сверху */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -26,43 +26,25 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 15px 50px;
-  background: rgba(45, 45, 53, 0.9); /* Начальная непрозрачность */
+  background: rgba(45, 45, 53, 0.9);
   box-shadow: 0px 5px 10px 0px rgba(6, 6, 18, 0.5);
   transition: background 0.3s ease, backdrop-filter 0.3s ease;
   z-index: 1000;
   overflow: visible;
 }
 
-.burger-menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 24px;
-  width: 30px;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  left: 50%; /* Смещение в центр */
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-}
-
-
-
 .scrolled {
-  background: rgba(45, 45, 53, 0.5); /* Уменьшаем прозрачность */
-  backdrop-filter: blur(10px); /* Размытие стеклянного эффекта */
+  background: rgba(45, 45, 53, 0.5);
+  backdrop-filter: blur(10px);
 }
-
 
 /* Логотип */
 .logo img {
   height: 70px;
-  margin-top: 5px; /* Устанавливаем небольшой отступ сверху, если нужно */
+  margin-top: 5px;
 }
 
-/* Меню */
+/* Основное меню */
 .navbar nav {
   display: flex;
   gap: 25px;
@@ -70,33 +52,70 @@ body {
 
 .navbar nav a {
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px !important;
   text-decoration: none;
   font-weight: 500;
   position: relative;
   transition: color 0.3s ease;
 }
 
-/* Подчеркивание при наведении */
-.navbar nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 0;
-  height: 2px;
-  transition: width 0.3s ease;
-}
-
-.navbar nav a:hover {
-  color: rgba(200, 15, 55, 1);
-}
-
 .navbar nav a:hover::after {
   width: 100%;
 }
 
-/* Иконки (корзина, профиль) */
+/* Выпадающее меню */
+.dropdown {
+  position: relative;
+}
+
+.dropdown > a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px;
+  display: block;
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  background: #333a47; /* Темный фон с легким оттенком синего для контраста */
+  padding: 10px;
+  min-width: 200px;
+  top: 100%;
+  left: 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+.dropdown-menu a {
+  color: #f1f1f1;
+  padding: 8px 10px;
+  display: block;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+  background: rgba(200, 15, 55, 1); 
+  color: white;
+}
+
+.dropdown:hover .dropdown-menu {
+  
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Иконки */
 .icons {
   display: flex;
   gap: 20px;
@@ -109,13 +128,11 @@ body {
 }
 
 .icons a:hover {
-  transform: scale(1.2);
   color: rgba(200, 15, 55, 1);
 }
 
-/* Иконки */
 .icons i {
-  margin-top: 7px ;
+  margin-top: 7px;
   color: white;
   font-size: 24px;
   margin-left: 20px;
@@ -126,7 +143,114 @@ body {
 .icons i:hover {
   color: rgba(200, 15, 55, 1);
 }
-/* Общие стили остаются неизменными */
+
+/* Бургер-меню */
+.burger-menu {
+  display: none; /* Скрываем по умолчанию */
+  flex-direction: column;
+  justify-content: space-between;
+  height: 24px;
+  width: 30px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%; /* Центрируем по вертикали */
+  left: 50%; /* Центрируем по горизонтали */
+  transform: translate(-50%, -50%); /* Точное центрирование */
+  z-index: 1001;
+}
+
+.burger-menu div {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+  .navbar {
+    height: 60px;
+    padding: 10px 20px;
+  }
+
+  .logo img {
+    height: 50px;
+  }
+
+  .navbar nav {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: rgba(45, 45, 53, 0.98);
+    padding: 20px 0;
+    z-index: 998;
+    overflow-y: auto;
+  }
+
+  .navbar nav a {
+    padding: 15px 20px;
+    font-size: 14px;
+  }
+
+  .dropdown-menu {
+    position: static;
+    display: none;
+    background: rgba(45, 45, 53, 0.95);
+    box-shadow: none;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .dropdown.active .dropdown-menu {
+    display: block;
+  }
+
+  .burger-menu {
+    display: flex;
+  }
+
+  .navbar.active nav {
+    display: flex;
+  }
+
+  .navbar.active .burger-menu div:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .navbar.active .burger-menu div:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navbar.active .burger-menu div:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  .navbar::before {
+    content: '';
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 997;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .navbar.active::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 
 /* Медиа-запрос для мобильных устройств */
 @media (max-width: 768px) {
@@ -1111,6 +1235,7 @@ p {
   .steps {
     margin-top: 150px;
     padding: 20px;
+    min-height: 50vh;
   }
 
   .steps-container {
@@ -1442,6 +1567,7 @@ a {
 @media screen and (max-width: 992px) {
   .prev {
     left: 0;
+    top: 220px !important;
     transform: translate(-50%, -50%);
   }
 }
@@ -1457,6 +1583,7 @@ a {
 }
 @media screen and (max-width: 576px) {
   .next {
+    top: 220px !important;
     transform: translate(-20%, -50%);
   }
 }
@@ -1590,11 +1717,13 @@ a {
 @media screen and (max-width: 992px) {
   .product-slider__card {
     align-items: flex-start;
+    
   }
 }
 @media screen and (max-width: 767px) {
   .product-slider__card {
     border-radius: 20px;
+
   }
 }
 
@@ -1639,7 +1768,8 @@ a {
 @media screen and (max-width: 767px) {
   .product-slider__content {
     padding: 20px 30px 50px;
-    padding-top: 300px;
+    padding-top: 250px !important;
+    height: 820px !important;
   }
 }
 @media screen and (max-width: 576px) {
@@ -1871,7 +2001,6 @@ a {
   .product-img {
     width: 430px;
     left: 20%;
-
   }
 }
 
@@ -1880,7 +2009,7 @@ a {
     width: 430px;
     left: 48%;
     transform: translateX(-50%);
-    top: -50px;
+    top: -130px;
     height: 350px;
     
   }
@@ -1890,7 +2019,7 @@ a {
   .product-img {
     width: 100%;
     max-width: 400px;
-    top: -50px;
+    top: -180px;
     left: 215px;
     height: 390px;
   }
