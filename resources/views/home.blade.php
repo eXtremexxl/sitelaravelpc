@@ -250,11 +250,292 @@
 
 
 
+<!-- Кнопка открытия чата -->
+<button id="chatbot-open" class="chatbot-open-btn">💬</button>
+
+<!-- Чат-бот -->
+<div class="chatbot-container">
+    <div class="chatbot-header">
+        <h3>Помощник по выбору ПК</h3>
+        <button id="chatbot-close">×</button>
+    </div>
+    <div class="chatbot-body" id="chatbot-body">
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="chatbot-message bot-message">Привет! Я помогу тебе выбрать игровой ПК. Что тебя интересует? Могу предложить сборку по бюджету или играм — просто скажи!</div>
+        </div>
+        <div class="chatbot-input">
+            <div class="input-wrapper">
+                <input type="text" id="chatbot-input" placeholder="Введите ваш вопрос...">
+                <div id="suggestions-list" class="suggestions-list"></div>
+            </div>
+            <button id="chatbot-send">Отправить</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatbotContainer = document.querySelector('.chatbot-container');
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotInput = document.getElementById('chatbot-input');
+    const chatbotSend = document.getElementById('chatbot-send');
+    const chatbotClose = document.getElementById('chatbot-close');
+    const chatbotOpen = document.getElementById('chatbot-open');
+    const suggestionsList = document.getElementById('suggestions-list');
+
+    const responses = {
+        'какой пк выбрать для игр': 'Для игровых систем мы рекомендуем конфигурацию с процессором Intel Core i7 или AMD Ryzen 7, видеокартой NVIDIA RTX 3060 и оперативной памятью объёмом 16 ГБ.',
+        'какой бюджет нужен для игрового пк': 'Для комфортной игры в современные проекты потребуется бюджет от 80 000 рублей. Для систем высокого уровня с максимальными настройками — от 120 000 рублей.',
+        'какая гарантия на сборку': 'На все наши сборки предоставляется гарантия сроком до 3 лет в зависимости от выбранных комплектующих и условий обслуживания.',
+        'как оформить заказ': 'Заказ можно оформить через каталог на нашем сайте либо обратиться к специалистам для создания индивидуальной конфигурации.',
+        'какие комплектующие лучше': 'Для игровых задач оптимальны процессоры Intel Core i7/i9 или AMD Ryzen 7/9, видеокарты NVIDIA RTX 3060/3070/3080 и оперативная память от 16 до 32 ГБ.',
+        'есть ли готовые сборки': 'Да, в нашем каталоге представлены готовые конфигурации, разработанные для различных задач и бюджетов.',
+        'какой процессор выбрать': 'Для игр рекомендуем Intel Core i7 или AMD Ryzen 7. Для более требовательных задач подойдут Intel Core i9 или AMD Ryzen 9.',
+        'какая видеокарта лучше для игр': 'Для игровых систем оптимальны видеокарты NVIDIA RTX 3060, 3070 или 3080 в зависимости от ваших требований к производительности.',
+        'сколько стоит доставка': 'Доставка по России бесплатна при заказе от 50 000 рублей. В остальных случаях стоимость рассчитывается индивидуально.',
+        'можно ли установить ос': 'Да, мы предлагаем установку операционных систем Windows или Linux по вашему выбору.',
+        'как собрать пк самому': 'Для самостоятельной сборки потребуются корпус, материнская плата, процессор, видеокарта, оперативная память, накопители (SSD/HDD) и блок питания. Мы готовы проконсультировать по выбору компонентов.',
+        'что лучше: amd или intel': 'AMD предлагает более доступные решения с высокой многопоточной производительностью, Intel обеспечивает преимущество в однопоточных задачах. Для игр оба бренда подходят отлично.',
+        'какую материнскую плату выбрать': 'Для процессоров Intel подойдут платы с чипсетами Z690 или Z790, для AMD — B550 или X570. Выбор зависит от совместимости с процессором.',
+        'сколько нужно оперативной памяти': 'Для игровых систем достаточно 16 ГБ оперативной памяти. Для стримеров или работы с видео рекомендуется 32 ГБ.',
+        'какой блок питания нужен': 'Для средней конфигурации подойдёт блок питания мощностью 650 Вт, для высокопроизводительных систем — 850 Вт. Рекомендуем модели с сертификатом 80+ Gold.',
+        'какое охлаждение выбрать': 'Для стандартных задач подойдёт воздушное охлаждение (например, Noctua NH-D15), для мощных систем рекомендуем жидкостное охлаждение (например, NZXT Kraken X63).',
+        'какую периферию посоветуешь': 'Рекомендуем механическую клавиатуру (например, Logitech G Pro), мышь Logitech G502 и монитор с частотой обновления 144 Гц (например, ASUS TUF Gaming).',
+        'какой софт нужен для игр': 'Для игр необходимы платформы Steam, Discord, актуальные драйверы для видеокарт NVIDIA/AMD, а также утилита MSI Afterburner для настройки производительности.',
+        'собери пк за мой бюджет': 'Пожалуйста, укажите ваш бюджет в рублях, и мы предложим оптимальную конфигурацию.',
+        'во что хочу поиграть': 'Укажите, в какие игры вы планируете играть, и мы подберём подходящую конфигурацию.',
+        'какой ssd выбрать': 'Для игр рекомендуем SSD с интерфейсом NVMe, объёмом от 512 ГБ (например, Samsung 970 EVO или WD Black SN750).',
+        'нужен ли hdd': 'HDD пригодится для хранения больших объёмов данных (например, 1-2 ТБ), если SSD используется как основной накопитель.',
+        'какой корпус лучше': 'Выбирайте корпус с хорошей вентиляцией и поддержкой современных компонентов, например, NZXT H510 или Cooler Master MasterBox.',
+        'как обновить пк': 'Для апгрейда определите слабые места текущей системы (процессор, видеокарта, ОЗУ) и замените их на более производительные аналоги. Мы можем помочь с подбором.',
+        'какой монитор выбрать': 'Для игр оптимален монитор с разрешением Full HD или 2K, частотой 144 Гц и временем отклика 1 мс (например, ASUS TUF VG27AQ).',
+        'что такое фпс': 'FPS (Frames Per Second) — это количество кадров в секунду, показывающее плавность изображения в играх. Чем выше FPS, тем лучше игровой опыт.',
+        'как проверить производительность пк': 'Используйте программы вроде 3DMark для тестирования видеокарты или Cinebench для процессора, чтобы оценить производительность.',
+        'какой интернет нужен для игр': 'Для онлайн-игр достаточно скорости 20-50 Мбит/с с низким пингом (до 50 мс).'
+    };
+
+    const suggestionOptions = Object.keys(responses).map(key => {
+        return key.charAt(0).toUpperCase() + key.slice(1) + '?';
+    });
+
+    const gameOptions = {
+        'вал': 'Valorant',
+        'кс': 'CS:GO',
+        'дота': 'Dota 2',
+        'сайбер': 'Cyberpunk 2077',
+        'рdr': 'Red Dead Redemption 2',
+        'гта': 'GTA V',
+        'форт': 'Fortnite',
+        'майн': 'Minecraft',
+        'код': 'Call of Duty',
+        'апекс': 'Apex Legends'
+    };
+
+    let isFirstOpen = true;
+    let awaitingBudget = false;
+    let awaitingGames = false;
+
+    // Открыть чат
+    chatbotOpen.addEventListener('click', () => {
+        chatbotContainer.style.display = 'flex';
+        if (isFirstOpen) {
+            showInitialSuggestions();
+            isFirstOpen = false;
+        }
+    });
+
+    // Закрыть чат
+    chatbotClose.addEventListener('click', () => {
+        chatbotContainer.style.display = 'none';
+    });
+
+    // Отправка сообщения
+    chatbotSend.addEventListener('click', sendMessage);
+    chatbotInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // Автодополнение
+    chatbotInput.addEventListener('input', () => {
+        const query = chatbotInput.value.trim().toLowerCase();
+        suggestionsList.innerHTML = '';
+        if (query) {
+            let options = awaitingGames ? Object.entries(gameOptions) : suggestionOptions.map(opt => [opt, opt]);
+            const filteredSuggestions = options.filter(([shortcut, option]) =>
+                shortcut.toLowerCase().includes(query) || option.toLowerCase().includes(query)
+            );
+            if (filteredSuggestions.length) {
+                filteredSuggestions.forEach(([_, suggestion]) => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.classList.add('suggestion-item');
+                    suggestionItem.textContent = suggestion;
+                    suggestionItem.addEventListener('click', () => {
+                        chatbotInput.value = suggestion;
+                        suggestionsList.style.display = 'none';
+                        sendMessage();
+                    });
+                    suggestionsList.appendChild(suggestionItem);
+                });
+                suggestionsList.style.display = 'block';
+            } else {
+                suggestionsList.style.display = 'none';
+            }
+        } else {
+            suggestionsList.style.display = 'none';
+        }
+    });
+
+    // Скрыть подсказки при клике вне поля
+    document.addEventListener('click', (e) => {
+        if (!chatbotInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+            suggestionsList.style.display = 'none';
+        }
+    });
+
+    function sendMessage() {
+        const userMessage = chatbotInput.value.trim();
+        if (!userMessage) return;
+
+        addMessage(userMessage, 'user-message');
+        chatbotInput.value = '';
+        suggestionsList.style.display = 'none';
+
+        if (awaitingBudget) {
+            handleBudgetResponse(userMessage);
+            awaitingBudget = false;
+        } else if (awaitingGames) {
+            handleGamesResponse(userMessage);
+            awaitingGames = false;
+        } else {
+            setTimeout(() => {
+                addMessage(getBotResponse(userMessage), 'bot-message');
+            }, 500);
+        }
+    }
+
+    function addMessage(text, className) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chatbot-message', className);
+        messageDiv.textContent = text;
+        chatbotMessages.appendChild(messageDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function showInitialSuggestions() {
+        const existingSuggestions = chatbotMessages.querySelectorAll('.chatbot-suggestion');
+        existingSuggestions.forEach(suggestion => suggestion.remove());
+
+        const initialSuggestions = [
+            'Какой ПК выбрать для игр?', 'Собери ПК за мой бюджет', 'Во что хочу поиграть', 'Как оформить заказ?'
+        ];
+        initialSuggestions.forEach(suggestion => {
+            const suggestionDiv = document.createElement('div');
+            suggestionDiv.classList.add('chatbot-message', 'chatbot-suggestion');
+            suggestionDiv.textContent = suggestion;
+            suggestionDiv.addEventListener('click', () => {
+                chatbotInput.value = suggestion;
+                sendMessage();
+            });
+            chatbotMessages.appendChild(suggestionDiv);
+        });
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    function getBotResponse(userMessage) {
+        const lowerMessage = userMessage.toLowerCase();
+        for (const [key, value] of Object.entries(responses)) {
+            if (lowerMessage.includes(key)) {
+                if (key === 'собери пк за мой бюджет') {
+                    awaitingBudget = true;
+                } else if (key === 'во что хочу поиграть') {
+                    awaitingGames = true;
+                }
+                return value;
+            }
+        }
+        return 'Не понял вопроса. Попробуй переформулировать!';
+    }
+
+    function handleBudgetResponse(budget) {
+        const budgetNum = parseInt(budget.replace(/[^0-9]/g, ''));
+        let response;
+        if (isNaN(budgetNum)) {
+            response = 'Пожалуйста, укажи бюджет в рублях числом (например, 80000).';
+        } else if (budgetNum < 50000) {
+            response = 'За ' + budgetNum + ' рублей можно собрать базовый ПК: Intel Core i3, GTX 1650, 8 ГБ ОЗУ, SSD 256 ГБ.';
+        } else if (budgetNum < 80000) {
+            response = 'За ' + budgetNum + ' рублей: Intel Core i5, RTX 3050, 16 ГБ ОЗУ, SSD 512 ГБ — для средних настроек.';
+        } else if (budgetNum < 120000) {
+            response = 'За ' + budgetNum + ' рублей: Intel Core i7, RTX 3060, 16 ГБ ОЗУ, SSD 1 ТБ — комфортный гейминг.';
+        } else {
+            response = 'За ' + budgetNum + ' рублей: AMD Ryzen 9, RTX 4080, 32 ГБ ОЗУ, SSD 1 ТБ — топовая сборка для 4K!';
+        }
+        addMessage(response, 'bot-message');
+    }
+
+    function handleGamesResponse(games) {
+        const lowerGames = games.toLowerCase();
+        let fullGameName = '';
+        let response;
+
+        for (const [shortcut, game] of Object.entries(gameOptions)) {
+            if (lowerGames.includes(shortcut)) {
+                fullGameName = game;
+                break;
+            }
+        }
+
+        if (!fullGameName) {
+            for (const game of Object.values(gameOptions)) {
+                if (lowerGames.includes(game.toLowerCase())) {
+                    fullGameName = game;
+                    break;
+                }
+            }
+        }
+
+        if (fullGameName === 'CS:GO' || fullGameName === 'Dota 2' || fullGameName === 'Valorant') {
+            response = `Для ${fullGameName}: Intel Core i5, GTX 1660 Super, 16 ГБ ОЗУ, SSD 512 ГБ. Примерная стоимость: ~60 000 рублей.`;
+        } else if (fullGameName === 'Cyberpunk 2077' || fullGameName === 'Red Dead Redemption 2' || fullGameName === 'GTA V') {
+            response = `Для ${fullGameName}: Intel Core i7, RTX 3070, 16 ГБ ОЗУ, SSD 1 ТБ. Примерная стоимость: ~110 000 рублей.`;
+        } else if (fullGameName === 'Fortnite' || fullGameName === 'Minecraft') {
+            response = `Для ${fullGameName}: Intel Core i5, RTX 3050, 16 ГБ ОЗУ, SSD 512 ГБ. Примерная стоимость: ~70 000 рублей.`;
+        } else if (fullGameName === 'Call of Duty' || fullGameName === 'Apex Legends') {
+            response = `Для ${fullGameName}: Intel Core i5, RTX 3060, 16 ГБ ОЗУ, SSD 512 ГБ. Примерная стоимость: ~80 000 рублей.`;
+        } else {
+            response = 'Назови конкретные игры (например, "кс" для CS:GO, "вал" для Valorant), чтобы я подобрал сборку и указал стоимость!';
+        }
+
+        addMessage(response, 'bot-message');
+    }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.5/js/swiper.min.js'></script>
 
     <script>
-
 (() => {
     const modelViewers = document.querySelectorAll('model-viewer');
     const cards = document.querySelectorAll('.card');

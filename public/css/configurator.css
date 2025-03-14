@@ -359,19 +359,3 @@ h1 {
         padding: 8px;
     }
 }
-
-/* Улучшение четкости текста для мобильных устройств */
-@media (max-width: 768px) {
-    body,
-    .configurator-container,
-    .filters select,
-    .form-group label,
-    .form-group select,
-    .total-info,
-    #compatibility,
-    .button-group .btn {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
-    }
-}
