@@ -261,7 +261,7 @@
     </div>
     <div class="chatbot-body" id="chatbot-body">
         <div class="chatbot-messages" id="chatbot-messages">
-            <div class="chatbot-message bot-message">Привет! Я помогу тебе выбрать игровой ПК. Что тебя интересует? Могу предложить сборку по бюджету или играм — просто скажи!</div>
+            <div class="chatbot-message bot-message">Привет! Я помогу тебе выбрать ПК. Для чего тебе нужен ПК? (игры, работа, учеба, стриминг)</div>
         </div>
         <div class="chatbot-input">
             <div class="input-wrapper">
@@ -273,8 +273,6 @@
     </div>
 </div>
 
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const chatbotContainer = document.querySelector('.chatbot-container');
@@ -285,34 +283,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatbotOpen = document.getElementById('chatbot-open');
     const suggestionsList = document.getElementById('suggestions-list');
 
+    // Объект для хранения контекста пользователя
+    let userContext = {
+        purpose: null, // Для чего нужен ПК (игры, работа, учеба, стриминг)
+        budget: null, // Бюджет
+        games: [], // Список игр (если выбраны игры)
+        programs: [], // Список программ (если выбрана работа)
+        resolution: null, // Разрешение монитора
+        overclocking: null, // Нужен ли разгон
+        brandPreference: null // Предпочтение бренда (AMD/Intel, NVIDIA/AMD)
+    };
+
+    // Ответы бота
     const responses = {
-        'какой пк выбрать для игр': 'Для игровых систем мы рекомендуем конфигурацию с процессором Intel Core i7 или AMD Ryzen 7, видеокартой NVIDIA RTX 3060 и оперативной памятью объёмом 16 ГБ.',
-        'какой бюджет нужен для игрового пк': 'Для комфортной игры в современные проекты потребуется бюджет от 80 000 рублей. Для систем высокого уровня с максимальными настройками — от 120 000 рублей.',
+        'какой пк выбрать для игр': 'Для игровых систем мы рекомендуем конфигурацию с процессором Intel Core i7 или AMD Ryzen 7, видеокартой NVIDIA RTX 3060 и оперативной памятью объёмом 16 ГБ. Но давай уточним: в какие игры ты хочешь играть?',
+        'какой пк выбрать для работы': 'Для работы выбор ПК зависит от программ, которые ты используешь. Какие программы тебе нужны? (например, Photoshop, AutoCAD, программирование)',
+        'какой пк выбрать для учебы': 'Для учебы подойдет ПК с процессором Intel Core i5 или AMD Ryzen 5, 8 ГБ ОЗУ и SSD на 256 ГБ. Хочешь узнать больше о конкретных моделях?',
+        'какой пк выбрать для стриминга': 'Для стриминга нужен мощный процессор (Intel Core i7 или AMD Ryzen 7), видеокарта NVIDIA RTX 3060, 32 ГБ ОЗУ и быстрый SSD. Хочешь уточнить бюджет?',
+        'какой бюджет нужен для игрового пк': 'Для комфортной игры в современные проекты потребуется бюджет от 80 000 рублей. Для систем высокого уровня с максимальными настройками — от 120 000 рублей. Какой у тебя бюджет?',
         'какая гарантия на сборку': 'На все наши сборки предоставляется гарантия сроком до 3 лет в зависимости от выбранных комплектующих и условий обслуживания.',
         'как оформить заказ': 'Заказ можно оформить через каталог на нашем сайте либо обратиться к специалистам для создания индивидуальной конфигурации.',
-        'какие комплектующие лучше': 'Для игровых задач оптимальны процессоры Intel Core i7/i9 или AMD Ryzen 7/9, видеокарты NVIDIA RTX 3060/3070/3080 и оперативная память от 16 до 32 ГБ.',
-        'есть ли готовые сборки': 'Да, в нашем каталоге представлены готовые конфигурации, разработанные для различных задач и бюджетов.',
-        'какой процессор выбрать': 'Для игр рекомендуем Intel Core i7 или AMD Ryzen 7. Для более требовательных задач подойдут Intel Core i9 или AMD Ryzen 9.',
-        'какая видеокарта лучше для игр': 'Для игровых систем оптимальны видеокарты NVIDIA RTX 3060, 3070 или 3080 в зависимости от ваших требований к производительности.',
+        'какие комплектующие лучше': 'Для игровых задач оптимальны процессоры Intel Core i7/i9 или AMD Ryzen 7/9, видеокарты NVIDIA RTX 3060/3070/3080 и оперативная память от 16 до 32 ГБ. Хочешь уточнить для каких задач?',
+        'есть ли готовые сборки': 'Да, в нашем каталоге представлены готовые конфигурации, разработанные для различных задач и бюджетов. Хочешь подобрать сборку под свои нужды?',
+        'какой процессор выбрать': 'Для игр рекомендуем Intel Core i7 или AMD Ryzen 7 (поколение 12/13 для Intel, 5000/7000 для AMD, 6-8 ядер, частота от 3.5 ГГц). Для работы или учебы хватит Intel Core i5 или Ryzen 5. Есть ли предпочтения по бренду (Intel/AMD)?',
+        'какая видеокарта лучше для игр': 'Для игр оптимальны видеокарты NVIDIA RTX 3060 (8 ГБ, поддержка трассировки лучей), 3070 или 4080 в зависимости от бюджета. Какое разрешение монитора ты используешь? (Full HD, 2K, 4K)',
         'сколько стоит доставка': 'Доставка по России бесплатна при заказе от 50 000 рублей. В остальных случаях стоимость рассчитывается индивидуально.',
         'можно ли установить ос': 'Да, мы предлагаем установку операционных систем Windows или Linux по вашему выбору.',
-        'как собрать пк самому': 'Для самостоятельной сборки потребуются корпус, материнская плата, процессор, видеокарта, оперативная память, накопители (SSD/HDD) и блок питания. Мы готовы проконсультировать по выбору компонентов.',
-        'что лучше: amd или intel': 'AMD предлагает более доступные решения с высокой многопоточной производительностью, Intel обеспечивает преимущество в однопоточных задачах. Для игр оба бренда подходят отлично.',
-        'какую материнскую плату выбрать': 'Для процессоров Intel подойдут платы с чипсетами Z690 или Z790, для AMD — B550 или X570. Выбор зависит от совместимости с процессором.',
-        'сколько нужно оперативной памяти': 'Для игровых систем достаточно 16 ГБ оперативной памяти. Для стримеров или работы с видео рекомендуется 32 ГБ.',
-        'какой блок питания нужен': 'Для средней конфигурации подойдёт блок питания мощностью 650 Вт, для высокопроизводительных систем — 850 Вт. Рекомендуем модели с сертификатом 80+ Gold.',
-        'какое охлаждение выбрать': 'Для стандартных задач подойдёт воздушное охлаждение (например, Noctua NH-D15), для мощных систем рекомендуем жидкостное охлаждение (например, NZXT Kraken X63).',
-        'какую периферию посоветуешь': 'Рекомендуем механическую клавиатуру (например, Logitech G Pro), мышь Logitech G502 и монитор с частотой обновления 144 Гц (например, ASUS TUF Gaming).',
-        'какой софт нужен для игр': 'Для игр необходимы платформы Steam, Discord, актуальные драйверы для видеокарт NVIDIA/AMD, а также утилита MSI Afterburner для настройки производительности.',
-        'собери пк за мой бюджет': 'Пожалуйста, укажите ваш бюджет в рублях, и мы предложим оптимальную конфигурацию.',
-        'во что хочу поиграть': 'Укажите, в какие игры вы планируете играть, и мы подберём подходящую конфигурацию.',
-        'какой ssd выбрать': 'Для игр рекомендуем SSD с интерфейсом NVMe, объёмом от 512 ГБ (например, Samsung 970 EVO или WD Black SN750).',
-        'нужен ли hdd': 'HDD пригодится для хранения больших объёмов данных (например, 1-2 ТБ), если SSD используется как основной накопитель.',
-        'какой корпус лучше': 'Выбирайте корпус с хорошей вентиляцией и поддержкой современных компонентов, например, NZXT H510 или Cooler Master MasterBox.',
-        'как обновить пк': 'Для апгрейда определите слабые места текущей системы (процессор, видеокарта, ОЗУ) и замените их на более производительные аналоги. Мы можем помочь с подбором.',
-        'какой монитор выбрать': 'Для игр оптимален монитор с разрешением Full HD или 2K, частотой 144 Гц и временем отклика 1 мс (например, ASUS TUF VG27AQ).',
+        'как собрать пк самому': 'Для самостоятельной сборки потребуются корпус, материнская плата, процессор, видеокарта, оперативная память, накопители (SSD/HDD) и блок питания. Хочешь узнать, как подобрать совместимые комплектующие?',
+        'что лучше: amd или intel': 'AMD предлагает более доступные решения с высокой многопоточной производительностью (Ryzen 7/9), Intel лучше в однопоточных задачах (Core i7/i9). Для игр оба бренда хороши. Есть ли у тебя предпочтения?',
+        'какую материнскую плату выбрать': 'Для процессоров Intel подойдут платы с чипсетами Z690 или Z790, для AMD — B550 или X570. Важно учитывать сокет (LGA 1700 для Intel, AM4/AM5 для AMD). Какой у тебя процессор?',
+        'сколько нужно оперативной памяти': 'Для игр достаточно 16 ГБ (частота 3200 МГц, тайминги CL16), для стриминга или работы с видео — 32 ГБ. Какие задачи ты планируешь выполнять?',
+        'какой блок питания нужен': 'Для средней конфигурации подойдёт блок питания мощностью 650 Вт, для высокопроизводительных систем — 850 Вт. Рекомендуем модели с сертификатом 80+ Gold. Планируешь разгон?',
+        'какое охлаждение выбрать': 'Для стандартных задач подойдёт воздушное охлаждение (например, Noctua NH-D15), для разгона или мощных систем — жидкостное (например, NZXT Kraken X63). Планируешь разгонять ПК?',
+        'какую периферию посоветуешь': 'Рекомендуем механическую клавиатуру (Logitech G Pro), мышь Logitech G502 и монитор с частотой обновления 144 Гц (ASUS TUF Gaming). Какое разрешение монитора тебе нужно?',
+        'какой софт нужен для игр': 'Для игр нужны Steam, Discord, драйверы для видеокарт NVIDIA/AMD, а также MSI Afterburner для настройки производительности.',
+        'собери пк за мой бюджет': 'Пожалуйста, укажи свой бюджет в рублях, и я предложу оптимальную конфигурацию.',
+        'во что хочу поиграть': 'Укажи, в какие игры ты планируешь играть, и я подберу подходящую конфигурацию.',
+        'какой ssd выбрать': 'Для игр рекомендуем SSD с интерфейсом NVMe, объёмом от 512 ГБ (Samsung 970 EVO, WD Black SN750, скорость чтения/записи от 3000/2000 МБ/с).',
+        'нужен ли hdd': 'HDD пригодится для хранения больших объёмов данных (1-2 ТБ), если SSD используется как основной накопитель. Сколько данных ты планируешь хранить?',
+        'какой корпус лучше': 'Выбирай корпус с хорошей вентиляцией (NZXT H510, Cooler Master MasterBox). Важно учитывать размер материнской платы (ATX, Micro-ATX). Какой у тебя форм-фактор?',
+        'как обновить пк': 'Для апгрейда определи слабые места (процессор, видеокарта, ОЗУ) и замени их. Хочешь узнать, что лучше обновить в твоей системе?',
+        'какой монитор выбрать': 'Для игр оптимален монитор с разрешением Full HD или 2K, частотой 144 Гц и временем отклика 1 мс (ASUS TUF VG27AQ). Какое разрешение тебе нужно?',
         'что такое фпс': 'FPS (Frames Per Second) — это количество кадров в секунду, показывающее плавность изображения в играх. Чем выше FPS, тем лучше игровой опыт.',
-        'как проверить производительность пк': 'Используйте программы вроде 3DMark для тестирования видеокарты или Cinebench для процессора, чтобы оценить производительность.',
+        'как проверить производительность пк': 'Используй 3DMark для тестирования видеокарты или Cinebench для процессора, чтобы оценить производительность.',
         'какой интернет нужен для игр': 'Для онлайн-игр достаточно скорости 20-50 Мбит/с с низким пингом (до 50 мс).'
     };
 
@@ -333,9 +346,27 @@ document.addEventListener('DOMContentLoaded', function() {
         'апекс': 'Apex Legends'
     };
 
+    const programOptions = {
+        'фотошоп': 'Photoshop',
+        'автокад': 'AutoCAD',
+        'программирование': 'Программирование',
+        'видео': 'Видеоредактирование (Premiere Pro, DaVinci Resolve)',
+        '3d': '3D-моделирование (Blender, 3ds Max)'
+    };
+
+    const resolutionOptions = {
+        'full hd': 'Full HD (1920x1080)',
+        '2k': '2K (2560x1440)',
+        '4k': '4K (3840x2160)'
+    };
+
     let isFirstOpen = true;
     let awaitingBudget = false;
     let awaitingGames = false;
+    let awaitingPrograms = false;
+    let awaitingResolution = false;
+    let awaitingOverclocking = false;
+    let awaitingBrandPreference = false;
 
     // Открыть чат
     chatbotOpen.addEventListener('click', () => {
@@ -362,7 +393,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const query = chatbotInput.value.trim().toLowerCase();
         suggestionsList.innerHTML = '';
         if (query) {
-            let options = awaitingGames ? Object.entries(gameOptions) : suggestionOptions.map(opt => [opt, opt]);
+            let options = [];
+            if (awaitingGames) {
+                options = Object.entries(gameOptions);
+            } else if (awaitingPrograms) {
+                options = Object.entries(programOptions);
+            } else if (awaitingResolution) {
+                options = Object.entries(resolutionOptions);
+            } else {
+                options = suggestionOptions.map(opt => [opt, opt]);
+            }
             const filteredSuggestions = options.filter(([shortcut, option]) =>
                 shortcut.toLowerCase().includes(query) || option.toLowerCase().includes(query)
             );
@@ -408,6 +448,18 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (awaitingGames) {
             handleGamesResponse(userMessage);
             awaitingGames = false;
+        } else if (awaitingPrograms) {
+            handleProgramsResponse(userMessage);
+            awaitingPrograms = false;
+        } else if (awaitingResolution) {
+            handleResolutionResponse(userMessage);
+            awaitingResolution = false;
+        } else if (awaitingOverclocking) {
+            handleOverclockingResponse(userMessage);
+            awaitingOverclocking = false;
+        } else if (awaitingBrandPreference) {
+            handleBrandPreferenceResponse(userMessage);
+            awaitingBrandPreference = false;
         } else {
             setTimeout(() => {
                 addMessage(getBotResponse(userMessage), 'bot-message');
@@ -428,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
         existingSuggestions.forEach(suggestion => suggestion.remove());
 
         const initialSuggestions = [
-            'Какой ПК выбрать для игр?', 'Собери ПК за мой бюджет', 'Во что хочу поиграть', 'Как оформить заказ?'
+            'Для чего тебе нужен ПК?', 'Собери ПК за мой бюджет', 'Во что хочу поиграть', 'Как оформить заказ?'
         ];
         initialSuggestions.forEach(suggestion => {
             const suggestionDiv = document.createElement('div');
@@ -445,12 +497,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getBotResponse(userMessage) {
         const lowerMessage = userMessage.toLowerCase();
+
+        // Определяем цель использования ПК
+        if (lowerMessage.includes('для чего') || lowerMessage.includes('цель')) {
+            userContext.purpose = null;
+            return 'Для чего тебе нужен ПК? (игры, работа, учеба, стриминг)';
+        }
+        if (lowerMessage.includes('игры')) {
+            userContext.purpose = 'игры';
+            awaitingGames = true;
+            return 'Отлично! В какие игры ты планируешь играть? (например, "кс" для CS:GO, "гта" для GTA V)';
+        }
+        if (lowerMessage.includes('работа')) {
+            userContext.purpose = 'работа';
+            awaitingPrograms = true;
+            return 'Какие программы ты используешь для работы? (например, Photoshop, AutoCAD, программирование)';
+        }
+        if (lowerMessage.includes('учеба')) {
+            userContext.purpose = 'учеба';
+            return responses['какой пк выбрать для учебы'];
+        }
+        if (lowerMessage.includes('стриминг')) {
+            userContext.purpose = 'стриминг';
+            return responses['какой пк выбрать для стриминга'];
+        }
+
+        // Обработка остальных вопросов
         for (const [key, value] of Object.entries(responses)) {
             if (lowerMessage.includes(key)) {
                 if (key === 'собери пк за мой бюджет') {
                     awaitingBudget = true;
                 } else if (key === 'во что хочу поиграть') {
                     awaitingGames = true;
+                } else if (key === 'какая видеокарта лучше для игр') {
+                    awaitingResolution = true;
+                } else if (key === 'какой процессор выбрать' || key === 'что лучше: amd или intel') {
+                    awaitingBrandPreference = true;
+                } else if (key === 'какое охлаждение выбрать' || key === 'какой блок питания нужен') {
+                    awaitingOverclocking = true;
                 }
                 return value;
             }
@@ -460,17 +544,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleBudgetResponse(budget) {
         const budgetNum = parseInt(budget.replace(/[^0-9]/g, ''));
+        userContext.budget = budgetNum;
         let response;
         if (isNaN(budgetNum)) {
             response = 'Пожалуйста, укажи бюджет в рублях числом (например, 80000).';
-        } else if (budgetNum < 50000) {
-            response = 'За ' + budgetNum + ' рублей можно собрать базовый ПК: Intel Core i3, GTX 1650, 8 ГБ ОЗУ, SSD 256 ГБ.';
-        } else if (budgetNum < 80000) {
-            response = 'За ' + budgetNum + ' рублей: Intel Core i5, RTX 3050, 16 ГБ ОЗУ, SSD 512 ГБ — для средних настроек.';
-        } else if (budgetNum < 120000) {
-            response = 'За ' + budgetNum + ' рублей: Intel Core i7, RTX 3060, 16 ГБ ОЗУ, SSD 1 ТБ — комфортный гейминг.';
         } else {
-            response = 'За ' + budgetNum + ' рублей: AMD Ryzen 9, RTX 4080, 32 ГБ ОЗУ, SSD 1 ТБ — топовая сборка для 4K!';
+            if (userContext.purpose === 'игры') {
+                if (budgetNum < 50000) {
+                    response = 'За ' + budgetNum + ' рублей можно собрать базовый игровой ПК: Intel Core i3, GTX 1650, 8 ГБ ОЗУ (3200 МГц), SSD 256 ГБ.';
+                } else if (budgetNum < 80000) {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i5, RTX 3050 (6 ГБ), 16 ГБ ОЗУ (3200 МГц), SSD 512 ГБ — для средних настроек.';
+                } else if (budgetNum < 120000) {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i7, RTX 3060 (8 ГБ), 16 ГБ ОЗУ (3600 МГц), SSD 1 ТБ — комфортный гейминг.';
+                } else {
+                    response = 'За ' + budgetNum + ' рублей: AMD Ryzen 9, RTX 4080 (16 ГБ), 32 ГБ ОЗУ (3600 МГц), SSD 1 ТБ — топовая сборка для 4K!';
+                }
+            } else if (userContext.purpose === 'работа') {
+                if (budgetNum < 50000) {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i3, встроенная графика, 8 ГБ ОЗУ, SSD 256 ГБ — для базовой работы.';
+                } else if (budgetNum < 80000) {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i5, встроенная графика, 16 ГБ ОЗУ, SSD 512 ГБ — для работы с графикой.';
+                } else {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i7, RTX 3060, 32 ГБ ОЗУ, SSD 1 ТБ — для тяжелых программ.';
+                }
+            } else if (userContext.purpose === 'учеба') {
+                response = 'За ' + budgetNum + ' рублей: Intel Core i5, встроенная графика, 8 ГБ ОЗУ, SSD 256 ГБ — для учебы.';
+            } else if (userContext.purpose === 'стриминг') {
+                if (budgetNum < 100000) {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i5, RTX 3050, 16 ГБ ОЗУ, SSD 512 ГБ — для базового стриминга.';
+                } else {
+                    response = 'За ' + budgetNum + ' рублей: Intel Core i7, RTX 3060, 32 ГБ ОЗУ, SSD 1 ТБ — для комфортного стриминга.';
+                }
+            }
         }
         addMessage(response, 'bot-message');
     }
@@ -478,11 +583,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleGamesResponse(games) {
         const lowerGames = games.toLowerCase();
         let fullGameName = '';
-        let response;
 
         for (const [shortcut, game] of Object.entries(gameOptions)) {
             if (lowerGames.includes(shortcut)) {
                 fullGameName = game;
+                userContext.games.push(game);
                 break;
             }
         }
@@ -491,24 +596,103 @@ document.addEventListener('DOMContentLoaded', function() {
             for (const game of Object.values(gameOptions)) {
                 if (lowerGames.includes(game.toLowerCase())) {
                     fullGameName = game;
+                    userContext.games.push(game);
                     break;
                 }
             }
         }
 
+        let response;
         if (fullGameName === 'CS:GO' || fullGameName === 'Dota 2' || fullGameName === 'Valorant') {
-            response = `Для ${fullGameName}: Intel Core i5, GTX 1660 Super, 16 ГБ ОЗУ, SSD 512 ГБ. Примерная стоимость: ~60 000 рублей.`;
+            response = `Для ${fullGameName}: Intel Core i5, GTX 1660 Super (6 ГБ), 16 ГБ ОЗУ (3200 МГц), SSD 512 ГБ. Примерная стоимость: ~60 000 рублей.`;
         } else if (fullGameName === 'Cyberpunk 2077' || fullGameName === 'Red Dead Redemption 2' || fullGameName === 'GTA V') {
-            response = `Для ${fullGameName}: Intel Core i7, RTX 3070, 16 ГБ ОЗУ, SSD 1 ТБ. Примерная стоимость: ~110 000 рублей.`;
+            response = `Для ${fullGameName}: Intel Core i7, RTX 3070 (8 ГБ), 16 ГБ ОЗУ (3600 МГц), SSD 1 ТБ. Примерная стоимость: ~110 000 рублей.`;
         } else if (fullGameName === 'Fortnite' || fullGameName === 'Minecraft') {
-            response = `Для ${fullGameName}: Intel Core i5, RTX 3050, 16 ГБ ОЗУ, SSD 512 ГБ. Примерная стоимость: ~70 000 рублей.`;
+            response = `Для ${fullGameName}: Intel Core i5, RTX 3050 (6 ГБ), 16 ГБ ОЗУ (3200 МГц), SSD 512 ГБ. Примерная стоимость: ~70 000 рублей.`;
         } else if (fullGameName === 'Call of Duty' || fullGameName === 'Apex Legends') {
-            response = `Для ${fullGameName}: Intel Core i5, RTX 3060, 16 ГБ ОЗУ, SSD 512 ГБ. Примерная стоимость: ~80 000 рублей.`;
+            response = `Для ${fullGameName}: Intel Core i5, RTX 3060 (8 ГБ), 16 ГБ ОЗУ (3200 МГц), SSD 512 ГБ. Примерная стоимость: ~80 000 рублей.`;
         } else {
             response = 'Назови конкретные игры (например, "кс" для CS:GO, "вал" для Valorant), чтобы я подобрал сборку и указал стоимость!';
+            awaitingGames = true;
+        }
+        addMessage(response, 'bot-message');
+    }
+
+    function handleProgramsResponse(programs) {
+        const lowerPrograms = programs.toLowerCase();
+        let fullProgramName = '';
+
+        for (const [shortcut, program] of Object.entries(programOptions)) {
+            if (lowerPrograms.includes(shortcut)) {
+                fullProgramName = program;
+                userContext.programs.push(program);
+                break;
+            }
         }
 
+        let response;
+        if (fullProgramName === 'Photoshop' || fullProgramName === 'Программирование') {
+            response = `Для ${fullProgramName}: Intel Core i5, 16 ГБ ОЗУ (3200 МГц), SSD 512 ГБ, встроенная графика. Примерная стоимость: ~60 000 рублей.`;
+        } else if (fullProgramName === 'AutoCAD' || fullProgramName === '3D-моделирование (Blender, 3ds Max)') {
+            response = `Для ${fullProgramName}: Intel Core i7, RTX 3060 (8 ГБ), 32 ГБ ОЗУ (3600 МГц), SSD 1 ТБ. Примерная стоимость: ~100 000 рублей.`;
+        } else if (fullProgramName === 'Видеоредактирование (Premiere Pro, DaVinci Resolve)') {
+            response = `Для ${fullProgramName}: Intel Core i7, RTX 3070 (8 ГБ), 32 ГБ ОЗУ (3600 МГц), SSD 1 ТБ. Примерная стоимость: ~120 000 рублей.`;
+        } else {
+            response = 'Назови конкретные программы (например, "фотошоп", "автокад"), чтобы я подобрал сборку!';
+            awaitingPrograms = true;
+        }
         addMessage(response, 'bot-message');
+    }
+
+    function handleResolutionResponse(resolution) {
+        const lowerResolution = resolution.toLowerCase();
+        let fullResolution = '';
+
+        for (const [shortcut, res] of Object.entries(resolutionOptions)) {
+            if (lowerResolution.includes(shortcut)) {
+                fullResolution = res;
+                userContext.resolution = res;
+                break;
+            }
+        }
+
+        let response;
+        if (fullResolution === 'Full HD (1920x1080)') {
+            response = 'Для Full HD подойдет видеокарта NVIDIA RTX 3050 или 3060 (6-8 ГБ).';
+        } else if (fullResolution === '2K (2560x1440)') {
+            response = 'Для 2K рекомендую NVIDIA RTX 3060 или 3070 (8 ГБ).';
+        } else if (fullResolution === '4K (3840x2160)') {
+            response = 'Для 4K нужна мощная видеокарта, например, NVIDIA RTX 4080 (16 ГБ).';
+        } else {
+            response = 'Укажи разрешение монитора (например, "Full HD", "2K", "4K").';
+            awaitingResolution = true;
+        }
+        addMessage(response, 'bot-message');
+    }
+
+    function handleOverclockingResponse(overclocking) {
+        const lowerOverclocking = overclocking.toLowerCase();
+        if (lowerOverclocking.includes('да') || lowerOverclocking.includes('хочу')) {
+            userContext.overclocking = true;
+            addMessage('Для разгона рекомендую жидкостное охлаждение (например, NZXT Kraken X63) и блок питания на 850 Вт (80+ Gold).', 'bot-message');
+        } else {
+            userContext.overclocking = false;
+            addMessage('Без разгона подойдет воздушное охлаждение (например, Noctua NH-D15) и блок питания на 650 Вт (80+ Gold).', 'bot-message');
+        }
+    }
+
+    function handleBrandPreferenceResponse(brand) {
+        const lowerBrand = brand.toLowerCase();
+        if (lowerBrand.includes('amd')) {
+            userContext.brandPreference = 'AMD';
+            addMessage('Хорошо, для AMD рекомендую Ryzen 7 5800X (8 ядер, 3.8 ГГц) или Ryzen 9 5900X для более тяжелых задач.', 'bot-message');
+        } else if (lowerBrand.includes('intel')) {
+            userContext.brandPreference = 'Intel';
+            addMessage('Хорошо, для Intel рекомендую Core i7-12700K (12 ядер, 3.6 ГГц) или Core i9-12900K для топовой производительности.', 'bot-message');
+        } else {
+            userContext.brandPreference = 'нет';
+            addMessage('Без предпочтений я могу предложить сбалансированный вариант: Intel Core i7 или AMD Ryzen 7.', 'bot-message');
+        }
     }
 });
 </script>
